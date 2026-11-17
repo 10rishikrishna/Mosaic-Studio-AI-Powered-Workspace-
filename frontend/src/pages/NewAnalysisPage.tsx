@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Zap, ArrowLeft, Loader2, CheckCircle, AlertCircle, ChevronRight, Database, Server, Shield, GitBranch, FileText, Cpu, CheckSquare, Layers, Sparkles, ShieldCheck, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../api/client';
 import './NewAnalysisPage.css';
 
 const STEPS = [
@@ -100,7 +101,7 @@ export default function NewAnalysisPage() {
     resetForm();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/v1/analyze/stream`, {
+      const response = await fetch(`${API_URL}/api/v1/analyze/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({

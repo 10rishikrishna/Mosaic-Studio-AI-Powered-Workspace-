@@ -1,6 +1,8 @@
 // src/api/client.ts
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
-const API_V1  = `${API_URL}/api/v1`;
+export const API_URL = import.meta.env.VITE_API_URL !== undefined
+  ? import.meta.env.VITE_API_URL
+  : (import.meta.env.DEV ? 'http://127.0.0.1:8000' : '');
+export const API_V1 = `${API_URL}/api/v1`;
 
 function getToken(): string | null {
   return localStorage.getItem('mosaic_token');

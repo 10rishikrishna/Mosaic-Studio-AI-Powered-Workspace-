@@ -5,11 +5,12 @@ Handles analysis generation, report generation, and notifications.
 """
 from celery import Celery
 from celery.schedules import crontab
+from backend.config import settings
 
 celery_app = Celery(
     "mosaic_studio",
-    broker="redis://localhost:6379/1",
-    backend="redis://localhost:6379/2",
+    broker=settings.CELERY_BROKER_URL,
+    backend=settings.CELERY_RESULT_BACKEND,
 )
 
 celery_app.conf.update(
