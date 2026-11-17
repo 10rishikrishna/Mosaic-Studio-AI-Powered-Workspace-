@@ -1908,12 +1908,12 @@ def build_explanation_modes(model: dict) -> dict:
         f"traffic and directs requests to a healthy copy. The design trades a tiny bit of "
         f"complexity for the guarantee that one failing part cannot take the whole system down.\n"
     )
+    user_str = f" for ~{int(users):,} users" if users else ""
     scale_line = (
         f"8. When traffic grows, the bottlenecks are known in advance: the services and the "
         f"database are the two places to watch. Services can be scaled by running more copies "
         f"behind the gateway, and reads are offloaded through the cache and read replicas so the "
-        f"database is only written once. Peak load is modeled at {_num(peak)} req/s"
-        f"{f' for ~{int(users):,} users' if users else ''}.\n"
+        f"database is only written once. Peak load is modeled at {_num(peak)} req/s{user_str}.\n"
     )
     story = (
         f"**How the {domain} system works — plain language**\n\n"
@@ -2403,18 +2403,21 @@ def build_deep_overview(model: dict) -> list:
     sections = []
 
     # 1. Executive summary ----------------------------------------------------
+    sys_type_desc = as_text(arch.get("system_type")) or f"{domain} Architecture"
+    user_summary_str = f" across ~{int(workload['users']):,} users" if workload.get("users") else ""
+    score_summary_str = f" at **{int(score)}/100**" if score is not None else ""
     sections.append({
         "key": "summary",
         "title": "What this system is — at a glance",
         "icon": "book",
         "paragraphs": [
-            f"This analysis designs **{as_text(arch.get('system_type')) or f'{domain} Architecture'}** for the problem: "
+            f"This analysis designs **{sys_type_desc}** for the problem: "
             f"*“{as_text(model.get('business_problem'))}”*. The recommended shape is **{pattern}** with "
             f"{len(components)} components and **{db_type}** as the system of record.",
-            f"It is sized for **{_num(avg)} req/s average** and **{_num(peak)} req/s peak** "
-            f"{f'across ~{int(workload["users"]):,} users' if workload.get('users') else ''}. "
+            f"It is sized for **{_num(avg)} req/s average** and **{_num(peak)} req/s peak**"
+            f"{user_summary_str}. "
             f"Every number below was calculated from the problem statement, not guessed, and the design was reviewed "
-            f"and scored" + (f" at **{int(score)}/100**" if score is not None else "") + ".",
+            f"and scored{score_summary_str}.",
         ],
     })
 
