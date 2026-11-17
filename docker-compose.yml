@@ -149,7 +149,7 @@ services:
   # ── Celery Worker (Background Tasks) ────────────────────
   celery-worker:
     build: ./backend
-    command: celery -B -l info -A backend.celery_app worker
+    command: celery -A backend.celery_app worker -B -l info
     environment:
       - DATABASE_URL=sqlite:////data/mosaic_studio.db
       - REDIS_URL=redis://redis:6379/1

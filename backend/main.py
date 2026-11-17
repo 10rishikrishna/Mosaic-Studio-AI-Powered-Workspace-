@@ -8,7 +8,8 @@ import time
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 import uvicorn
 
 from backend.config import settings
@@ -157,22 +158,7 @@ def root():
 @app.get("/metrics", tags=["Observability"])
 def metrics():
     """Prometheus-compatible metrics endpoint."""
-    return {
-        "help": "Use Prometheus client library for detailed metrics",
-        "counters": [
-            "mosaic_http_requests_total",
-            "mosaic_http_request_duration_seconds",
-            "mosaic_analysis_started_total",
-            "mosaic_analysis_completed_total",
-            "mosaic_chat_messages_total",
-            "mosaic_auth_login_total",
-        ],
-        "gauges": [
-            "mosaic_active_users",
-            "mosaic_active_analyses",
-            "mosaic_database_connections",
-        ],
-    }
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 if __name__ == "__main__":
